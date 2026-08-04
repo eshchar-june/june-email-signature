@@ -2,8 +2,6 @@
 
 A single-page tool for generating the June email signature and pasting it straight into Gmail.
 
-![Signature preview](images/image-1.png)
-
 No build step, no dependencies — open `index.html` in a browser.
 
 ## Usage
@@ -19,20 +17,26 @@ Your details persist in `localStorage`, so the form comes back filled in next ti
 The generated markup is table-based with 100% inline styles — no `<style>` block, no classes, and no
 media queries, since Gmail strips all of those from a signature. The June logo and the three contact
 icons are embedded as base64 data URIs, so there is nothing to host; Gmail re-uploads pasted images
-to its own servers. A leading `<br>` keeps the signature off the message body.
+to its own servers. Copying prepends a `<br>` so the signature isn't flush against the message body.
 
 Verified against Gmail, and built to the same conventions Outlook and Apple Mail need.
 
 ## Behaviour worth knowing
 
-- Empty phone or link fields drop out cleanly, spacer cells included. If all three contact items are
-  empty, the divider under the name disappears too.
+- Every field degrades cleanly when empty, spacer cells included. Empty contact fields drop out; if
+  all three are gone so is the divider, and an empty name and title take the whole heading block with
+  them rather than leaving a blank line above a bare rule.
 - Bare domains are normalised (`june.ai/demo` → `https://june.ai/demo`).
 - Email becomes a `mailto:` link, phone a `tel:` link.
 - **Copy signature** copies rich HTML by selecting a rendered off-screen node and letting the browser
   serialise it — the path that keeps images intact in Gmail's editor. `navigator.clipboard.write()`
-  with `text/html` + `text/plain` is the fallback.
+  with `text/html` + `text/plain` is the fallback. This is the only path that prepends the leading
+  `<br>`, so the preview and both HTML exports stay identical to the signature itself.
 - **Copy HTML** / **Download .html** export the raw markup for other clients.
+- The logo and contact icons are fixed. There is no upload — swap the PNGs in `images/` and
+  regenerate `assets.js`.
+- Field labels float Bootstrap-style, driven entirely by `:placeholder-shown`. That is why every
+  input carries `placeholder=" "`; removing it strands the labels in their floated position.
 
 ## Files
 
@@ -58,6 +62,6 @@ To regenerate `assets.js` after changing any image:
 
 ## Design
 
-Layout metrics match the original signature template exactly: 90×90 circular avatar, 24px gap, name
-at 20/28 weight 600, title at 15/24, a 1px `#e0e0e0` divider 12px under the title, 16px above the
-contact row, 14px icons with 6px gaps and 16px between items, all in `#1c1842` Inter.
+90×90 circular avatar, 24px gap, name at 18/26 weight 600, title at 14/20 to match the contact
+metadata below it, a 1px `#e0e0e0` divider 12px under the heading, 16px above the contact row, 14px
+icons with 6px gaps and 16px between items, all in `#1c1842` Inter.

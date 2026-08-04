@@ -489,19 +489,19 @@
          so the label can float on its own, without any JS -->
     <form class="fields" id="form" autocomplete="off" onsubmit="return false">
       <div class="field">
-        <input type="text" id="f-name" data-k="name" placeholder=" " value="Eshchar Zychlinski">
+        <input type="text" id="f-name" data-k="name" placeholder=" " value="">
         <label for="f-name">Full name</label>
       </div>
       <div class="field">
-        <input type="text" id="f-title" data-k="title" placeholder=" " value="Product Designer @ June.ai">
+        <input type="text" id="f-title" data-k="title" placeholder=" " value="">
         <label for="f-title">Job title</label>
       </div>
       <div class="field">
-        <input type="text" id="f-email" data-k="email" placeholder=" " value="eshchar@june.ai">
+        <input type="text" id="f-email" data-k="email" placeholder=" " value="">
         <label for="f-email">Email address</label>
       </div>
       <div class="field">
-        <input type="text" id="f-phone" data-k="phone" placeholder=" " value="052-4502440">
+        <input type="text" id="f-phone" data-k="phone" placeholder=" " value="">
         <label for="f-phone">Phone number</label>
       </div>
       <div class="field">
@@ -509,7 +509,7 @@
         <label for="f-linkText">Link label</label>
       </div>
       <div class="field">
-        <input type="text" id="f-linkUrl" data-k="linkUrl" placeholder=" " value="">
+        <input type="text" id="f-linkUrl" data-k="linkUrl" placeholder=" " value="https://www.june.ai/get-a-demo">
         <label for="f-linkUrl">Link URL</label>
       </div>
     </form>
@@ -611,13 +611,15 @@
       // The June avatar and the contact icons are fixed, embedded assets.
       var AVATAR = A.avatar || '';
 
+      // Empty by default so the tool ships without anyone's personal details.
+      // Keep these in sync with the value="" attributes on the inputs.
       var state = {
-        name: 'Eshchar Zychlinski',
-        title: 'Product Designer @ June.ai',
-        email: 'eshchar@june.ai',
-        phone: '052-4502440',
+        name: '',
+        title: '',
+        email: '',
+        phone: '',
         linkText: 'Book a demo',
-        linkUrl: ''
+        linkUrl: 'https://www.june.ai/get-a-demo'
       };
 
       /* ---------- helpers ---------- */
@@ -687,20 +689,24 @@
           items.push(contactItem('globe', state.linkText.trim(), linkHref(state.linkUrl)));
         }
 
+        // an empty heading would otherwise leave a stray blank line above a bare divider
+        var hasHeading = state.name.trim() || state.title.trim();
+
         var contactRow = items.length
-          ? '<tr><td style="padding:16px 0 0 0;">' +
+          ? '<tr><td style="padding:' + (hasHeading ? '16px' : '0') + ' 0 0 0;">' +
           '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr>' +
           items.join(spacer(16)) +
           '</tr></table></td></tr>'
           : '';
 
-        var nameBlock =
-          '<tr><td style="padding:0 0 12px 0;' +
+        var nameBlock = hasHeading
+          ? '<tr><td style="padding:0 0 12px 0;' +
           (items.length ? 'border-bottom:1px solid #e0e0e0;' : '') + '">' +
-          text(18, 26, 600, esc(state.name)) +
+          (state.name.trim() ? text(18, 26, 600, esc(state.name.trim())) : '') +
           // title matches the contact metadata below it at 14/20
           (state.title.trim() ? text(14, 20, 400, esc(state.title.trim())) : '') +
-          '</td></tr>';
+          '</td></tr>'
+          : '';
 
         var photo = AVATAR
           ? '<td width="90" style="width:90px;padding:0;vertical-align:middle;">' +
