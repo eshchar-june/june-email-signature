@@ -136,24 +136,50 @@
       }
     }
 
+    /* floating-label field: the label rests like a placeholder, then shrinks
+       up into the input's top padding once the field is focused or filled */
+    .field {
+      position: relative;
+    }
+
     input[type=text] {
       width: 100%;
-      height: 48px;
+      height: 56px;
       font: inherit;
       font-size: 15px;
       color: var(--foreground);
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r-lg);
-      padding: 0 16px;
+      padding: 24px 16px 8px;
       outline: none;
       transition: border-color .15s, box-shadow .15s;
       -webkit-appearance: none;
       appearance: none;
     }
 
-    input::placeholder {
+    .field label {
+      position: absolute;
+      left: 17px;
+      top: 17px;
+      font-size: 15px;
+      line-height: 1.5;
       color: var(--subtle);
+      pointer-events: none;
+      white-space: nowrap;
+      transform-origin: 0 0;
+      transition: transform .16s cubic-bezier(.4, 0, .2, 1), color .16s;
+    }
+
+    .field input:focus + label,
+    .field input:not(:placeholder-shown) + label {
+      transform: translateY(-9px) scale(.733);
+      /* 15px → 11px */
+      font-weight: 500;
+    }
+
+    .field input:focus + label {
+      color: var(--accent);
     }
 
     input:focus,
@@ -459,13 +485,33 @@
     </header>
 
     <!-- ================= form ================= -->
+    <!-- placeholder=" " is load-bearing: it makes :placeholder-shown track emptiness
+         so the label can float on its own, without any JS -->
     <form class="fields" id="form" autocomplete="off" onsubmit="return false">
-      <input type="text" data-k="name" placeholder="Full name" aria-label="Full name" value="Eshchar Zychlinski">
-      <input type="text" data-k="title" placeholder="Job title" aria-label="Job title" value="Product Designer @ June.ai">
-      <input type="text" data-k="email" placeholder="Email address" aria-label="Email address" value="eshchar@june.ai">
-      <input type="text" data-k="phone" placeholder="Phone number" aria-label="Phone number" value="052-4502440">
-      <input type="text" data-k="linkText" placeholder="Link label" aria-label="Link label" value="Book a demo">
-      <input type="text" data-k="linkUrl" placeholder="Link URL" aria-label="Link URL" value="">
+      <div class="field">
+        <input type="text" id="f-name" data-k="name" placeholder=" " value="Eshchar Zychlinski">
+        <label for="f-name">Full name</label>
+      </div>
+      <div class="field">
+        <input type="text" id="f-title" data-k="title" placeholder=" " value="Product Designer @ June.ai">
+        <label for="f-title">Job title</label>
+      </div>
+      <div class="field">
+        <input type="text" id="f-email" data-k="email" placeholder=" " value="eshchar@june.ai">
+        <label for="f-email">Email address</label>
+      </div>
+      <div class="field">
+        <input type="text" id="f-phone" data-k="phone" placeholder=" " value="052-4502440">
+        <label for="f-phone">Phone number</label>
+      </div>
+      <div class="field">
+        <input type="text" id="f-linkText" data-k="linkText" placeholder=" " value="Book a demo">
+        <label for="f-linkText">Link label</label>
+      </div>
+      <div class="field">
+        <input type="text" id="f-linkUrl" data-k="linkUrl" placeholder=" " value="">
+        <label for="f-linkUrl">Link URL</label>
+      </div>
     </form>
 
     <!-- ================= preview ================= -->
@@ -651,8 +697,9 @@
         var nameBlock =
           '<tr><td style="padding:0 0 12px 0;' +
           (items.length ? 'border-bottom:1px solid #e0e0e0;' : '') + '">' +
-          text(20, 28, 600, esc(state.name)) +
-          (state.title.trim() ? text(15, 24, 400, esc(state.title.trim())) : '') +
+          text(18, 26, 600, esc(state.name)) +
+          // title matches the contact metadata below it at 14/20
+          (state.title.trim() ? text(14, 20, 400, esc(state.title.trim())) : '') +
           '</td></tr>';
 
         var photo = AVATAR
@@ -662,9 +709,7 @@
           '</td>' + spacer(24)
           : '';
 
-        // leading break so the signature isn't flush against the message body
         return '' +
-          '<br>' +
           '<table role="presentation" cellpadding="0" cellspacing="0" border="0" ' +
           'style="border-collapse:collapse;background-color:#ffffff;font-family:' + FONT + ';color:' + INK + ';"><tr>' +
           photo +
@@ -793,8 +838,11 @@
 
       document.getElementById('copyRich').addEventListener('click', function (e) {
         var btn = e.currentTarget;
-        if (copyRendered(html)) return flash(btn, 'Copied');
-        copyViaApi(html, plain())
+        // The leading break only goes on the clipboard — it gives the signature room
+        // to breathe under the message body, and would just look like a gap in the preview.
+        var markup = '<br>' + html;
+        if (copyRendered(markup)) return flash(btn, 'Copied');
+        copyViaApi(markup, '\n' + plain())
           .then(function () { flash(btn, 'Copied'); })
           .catch(function () { flash(btn, 'Copy failed — use HTML'); });
       });
