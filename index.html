@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create your email signature</title>
+  <meta name="description" content="Build a June email signature and paste it straight into Gmail." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: #f6f6f7;
+      --card: #ffffff;
+      --foreground: #1c1842;
+      --muted: rgba(28, 24, 66, .56);
+      --subtle: rgba(28, 24, 66, .38);
+      --border: rgba(28, 24, 66, .11);
+      --border-strong: rgba(28, 24, 66, .22);
+      --primary: #1c1842;
+      --primary-hover: #2b2559;
+      --primary-fg: #ffffff;
+      --accent: #f87c93;
+      --accent-fg: #fef3c0;
+      --ring: rgba(248, 124, 147, .32);
+      --r-lg: 12px;
+      --r-xl: 16px;
+      --shadow-card: 0 1px 2px rgba(28, 24, 66, .04), 0 12px 28px -16px rgba(28, 24, 66, .18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--foreground);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 672px;
+      margin: 0 auto;
+      padding: 48px 16px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ---------------- header ---------------- */
+
+    .masthead {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--r-lg);
+      background: var(--accent);
+      color: var(--accent-fg);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -.018em;
+      margin: 0;
+    }
+
+    @media (min-width:768px) {
+      h1 {
+        font-size: 30px;
+      }
+    }
+
+    .masthead p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* ---------------- generic bits ---------------- */
+
+    .eyebrow {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .icon-lg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* ---------------- fields ---------------- */
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width:768px) {
+      .fields {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    input[type=text] {
+      width: 100%;
+      height: 48px;
+      font: inherit;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 0 16px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input::placeholder {
+      color: var(--subtle);
+    }
+
+    input:focus,
+    input:focus-visible {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    /* ---------------- preview ---------------- */
+
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .segment {
+      display: inline-flex;
+      gap: 2px;
+      padding: 2px;
+      background: rgba(28, 24, 66, .05);
+      border-radius: 9px;
+    }
+
+    .segment button {
+      font: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      border-radius: 7px;
+      padding: 5px 11px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+
+    .segment button[aria-selected=true] {
+      background: var(--card);
+      color: var(--foreground);
+      box-shadow: 0 1px 2px rgba(28, 24, 66, .1);
+    }
+
+    .preview-card {
+      background: var(--card);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      overflow-x: auto;
+    }
+
+    #frame {
+      display: block;
+      width: 100%;
+      height: 102px;
+      border: 0;
+      background: transparent;
+    }
+
+    #code {
+      display: none;
+      margin: 0;
+      max-height: 300px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11.5px;
+      line-height: 1.65;
+      color: var(--muted);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* ---------------- actions ---------------- */
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width:640px) {
+      .actions {
+        flex-direction: row;
+      }
+    }
+
+    .btn {
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      border: 1px solid transparent;
+      border-radius: var(--r-lg);
+      padding: 0 24px;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s, transform .08s;
+    }
+
+    .btn:active {
+      transform: scale(.99);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: var(--primary);
+      color: var(--primary-fg);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-primary.ok {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: var(--card);
+      color: var(--foreground);
+      border-color: var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--border-strong);
+    }
+
+    .quiet-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .quiet {
+      font: inherit;
+      font-size: 13px;
+      color: var(--muted);
+      background: none;
+      border: 0;
+      border-radius: 7px;
+      padding: 5px 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .15s, background .15s;
+    }
+
+    .quiet:hover {
+      color: var(--foreground);
+      background: rgba(28, 24, 66, .04);
+    }
+
+    .quiet .icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .quiet-sep {
+      color: var(--subtle);
+      font-size: 13px;
+    }
+
+    .footnote {
+      margin: 0;
+      text-align: center;
+      font-size: 12px;
+      color: var(--subtle);
+    }
+
+    /* ---------------- dialog ---------------- */
+
+    dialog {
+      width: calc(100% - 32px);
+      max-width: 440px;
+      padding: 0;
+      border: 0;
+      border-radius: var(--r-xl);
+      background: var(--card);
+      color: var(--foreground);
+      box-shadow: 0 24px 60px -20px rgba(28, 24, 66, .4);
+    }
+
+    dialog::backdrop {
+      background: rgba(28, 24, 66, .32);
+      backdrop-filter: blur(2px);
+    }
+
+    .dialog-inner {
+      padding: 24px;
+    }
+
+    .dialog-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .dialog-head h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
+
+    .iconbtn {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+
+    .iconbtn:hover {
+      background: rgba(28, 24, 66, .05);
+      color: var(--foreground);
+    }
+
+    dialog ol {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    dialog li {
+      margin-bottom: 8px;
+    }
+
+    dialog li:last-child {
+      margin-bottom: 0;
+    }
+
+    dialog b {
+      color: var(--foreground);
+      font-weight: 600;
+    }
+
+    dialog .note {
+      margin: 16px 0 0;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 12.5px;
+      color: var(--subtle);
+    }
+
+    kbd {
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--foreground);
+      background: rgba(28, 24, 66, .06);
+      border-radius: 5px;
+      padding: 1px 5px;
+    }
+
+    /* off-screen node used for the rich-text clipboard copy */
+    #holder {
+      position: fixed;
+      left: -99999px;
+      top: 0;
+      width: 720px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <!-- ================= header ================= -->
+    <header class="masthead">
+      <span class="badge">
+        <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
+          <rect width="20" height="16" x="2" y="4" rx="2" />
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        </svg>
+      </span>
+      <h1>Create your email signature</h1>
+      <p>Fill in your details and copy it to your Gmail settings</p>
+    </header>
+
+    <!-- ================= form ================= -->
+    <form class="fields" id="form" autocomplete="off" onsubmit="return false">
+      <input type="text" data-k="name" placeholder="Full name" aria-label="Full name" value="Eshchar Zychlinski">
+      <input type="text" data-k="title" placeholder="Job title" aria-label="Job title" value="Product Designer @ June.ai">
+      <input type="text" data-k="email" placeholder="Email address" aria-label="Email address" value="eshchar@june.ai">
+      <input type="text" data-k="phone" placeholder="Phone number" aria-label="Phone number" value="052-4502440">
+      <input type="text" data-k="linkText" placeholder="Link label" aria-label="Link label" value="Book a demo">
+      <input type="text" data-k="linkUrl" placeholder="Link URL" aria-label="Link URL" value="">
+    </form>
+
+    <!-- ================= preview ================= -->
+    <section>
+      <div class="preview-head">
+        <p class="eyebrow">Preview</p>
+        <div class="segment" role="tablist" aria-label="Preview mode">
+          <button type="button" role="tab" data-view="visual" aria-selected="true">Visual</button>
+          <button type="button" role="tab" data-view="code" aria-selected="false">HTML</button>
+        </div>
+      </div>
+      <div class="preview-card">
+        <iframe id="frame" title="Signature preview" scrolling="no"></iframe>
+        <pre id="code"></pre>
+      </div>
+    </section>
+
+    <!-- ================= actions ================= -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="copyRich">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+          </svg>
+          <span>Copy signature</span>
+        </button>
+        <button type="button" class="btn btn-outline" id="howto">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <path d="M12 17h.01" />
+          </svg>
+          How to import?
+        </button>
+      </div>
+
+      <div class="quiet-row">
+        <button type="button" class="quiet" id="copyCode">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m18 16 4-4-4-4" />
+            <path d="m6 8-4 4 4 4" />
+            <path d="m14.5 4-5 16" />
+          </svg>
+          <span>Copy HTML</span>
+        </button>
+        <span class="quiet-sep">·</span>
+        <button type="button" class="quiet" id="download">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <path d="M7 10l5 5 5-5" />
+            <path d="M12 15V3" />
+          </svg>
+          <span>Download .html</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="footnote">Works with Gmail, Outlook, and most email clients</p>
+  </main>
+
+  <!-- ================= dialog ================= -->
+  <dialog id="dlg" aria-labelledby="dlgTitle">
+    <div class="dialog-inner">
+      <div class="dialog-head">
+        <h2 id="dlgTitle">Adding it to Gmail</h2>
+        <button type="button" class="iconbtn" id="dlgClose" aria-label="Close">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+      <ol>
+        <li>Hit <b>Copy signature</b>.</li>
+        <li>In Gmail, open <b>Settings → See all settings → General</b> and scroll down to <b>Signature</b>.</li>
+        <li>Create or select a signature, click into the editor and paste with <kbd>⌘V</kbd>.</li>
+        <li>Scroll to the bottom and <b>Save Changes</b>.</li>
+      </ol>
+      <p class="note">Everything is inline-styled and table-based, so it survives Gmail, Outlook and Apple Mail. The logo
+        and icons travel with the signature as embedded images, so there is nothing to host.</p>
+    </div>
+  </dialog>
+
+  <div id="holder" aria-hidden="true"></div>
+
+  <script src="assets.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var A = window.SIG_ASSETS || {};
+      var FONT = 'Inter,Arial,sans-serif';
+      var INK = '#1c1842';
+      var STORE = 'june-signature-v2';
+
+      // The June avatar and the contact icons are fixed, embedded assets.
+      var AVATAR = A.avatar || '';
+
+      var state = {
+        name: 'Eshchar Zychlinski',
+        title: 'Product Designer @ June.ai',
+        email: 'eshchar@june.ai',
+        phone: '052-4502440',
+        linkText: 'Book a demo',
+        linkUrl: ''
+      };
+
+      /* ---------- helpers ---------- */
+
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function telHref(p) {
+        var d = String(p || '').replace(/[^\d+]/g, '');
+        return d.replace(/(?!^)\+/g, '');
+      }
+
+      function linkHref(u) {
+        u = String(u || '').trim();
+        if (!u) return '';
+        return /^([a-z][a-z0-9+.-]*:|\/\/)/i.test(u) ? u : 'https://' + u;
+      }
+
+      /* ---------- signature markup ----------
+         Table layout + inline styles only. No <style> block, no classes,
+         no media queries — Gmail strips all of those from a signature.      */
+
+      function text(size, height, weight, inner) {
+        return '<div style="margin:0;font-family:' + FONT + ';font-size:' + size +
+          'px;line-height:' + height + 'px;font-weight:' + weight + ';color:' + INK +
+          ';text-align:left;">' + inner + '</div>';
+      }
+
+      function link(href, label) {
+        if (!href) return label;
+        return '<a href="' + esc(href) + '" target="_blank" style="color:' + INK +
+          ';text-decoration:none;">' + label + '</a>';
+      }
+
+      function spacer(px) {
+        return '<td width="' + px + '" style="width:' + px + 'px;min-width:' + px +
+          'px;font-size:1px;line-height:1px;">&#8202;</td>';
+      }
+
+      function contactItem(icon, label, href) {
+        return '' +
+          '<td style="padding:0;vertical-align:middle;">' +
+          '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr>' +
+          '<td width="14" style="width:14px;padding:0;vertical-align:middle;">' +
+          '<img src="' + esc(A[icon] || '') + '" width="14" height="14" alt="" style="width:14px;height:14px;display:block;border:0;outline:none;text-decoration:none;">' +
+          '</td>' +
+          spacer(6) +
+          '<td style="padding:0;vertical-align:middle;white-space:nowrap;">' +
+          text(14, 20, 400, link(href, esc(label))) +
+          '</td>' +
+          '</tr></table>' +
+          '</td>';
+      }
+
+      function build() {
+        var items = [];
+        if (state.email.trim()) {
+          items.push(contactItem('mail', state.email.trim(), 'mailto:' + state.email.trim()));
+        }
+        if (state.phone.trim()) {
+          items.push(contactItem('phone', state.phone.trim(), 'tel:' + telHref(state.phone)));
+        }
+        if (state.linkText.trim()) {
+          items.push(contactItem('globe', state.linkText.trim(), linkHref(state.linkUrl)));
+        }
+
+        var contactRow = items.length
+          ? '<tr><td style="padding:16px 0 0 0;">' +
+          '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr>' +
+          items.join(spacer(16)) +
+          '</tr></table></td></tr>'
+          : '';
+
+        var nameBlock =
+          '<tr><td style="padding:0 0 12px 0;' +
+          (items.length ? 'border-bottom:1px solid #e0e0e0;' : '') + '">' +
+          text(20, 28, 600, esc(state.name)) +
+          (state.title.trim() ? text(15, 24, 400, esc(state.title.trim())) : '') +
+          '</td></tr>';
+
+        var photo = AVATAR
+          ? '<td width="90" style="width:90px;padding:0;vertical-align:middle;">' +
+          '<img src="' + esc(AVATAR) + '" width="90" height="90" alt="' + esc(state.name) + '" ' +
+          'style="width:90px;height:90px;display:block;border:0;outline:none;border-radius:45px;">' +
+          '</td>' + spacer(24)
+          : '';
+
+        // leading break so the signature isn't flush against the message body
+        return '' +
+          '<br>' +
+          '<table role="presentation" cellpadding="0" cellspacing="0" border="0" ' +
+          'style="border-collapse:collapse;background-color:#ffffff;font-family:' + FONT + ';color:' + INK + ';"><tr>' +
+          photo +
+          '<td style="padding:0;vertical-align:middle;">' +
+          '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">' +
+          nameBlock + contactRow +
+          '</table>' +
+          '</td>' +
+          '</tr></table>';
+      }
+
+      function plain() {
+        var out = [state.name, state.title];
+        if (state.email.trim()) out.push(state.email.trim());
+        if (state.phone.trim()) out.push(state.phone.trim());
+        if (state.linkText.trim()) {
+          out.push(state.linkText.trim() + (linkHref(state.linkUrl) ? ' — ' + linkHref(state.linkUrl) : ''));
+        }
+        return out.filter(Boolean).join('\n');
+      }
+
+      /* ---------- render ---------- */
+
+      var frame = document.getElementById('frame');
+      var codeEl = document.getElementById('code');
+      var html = '';
+
+      // keep the preview card hugging the signature instead of guessing a height
+      frame.addEventListener('load', function () {
+        var body = frame.contentDocument && frame.contentDocument.body;
+        if (body) frame.style.height = Math.max(body.scrollHeight, 24) + 'px';
+      });
+
+      function render() {
+        html = build();
+        codeEl.textContent = html;
+
+        frame.srcdoc =
+          '<!doctype html><html><head><meta charset="utf-8">' +
+          '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">' +
+          '<style>html,body{margin:0;padding:0;background:transparent;overflow:hidden}</style>' +
+          '</head><body>' + html + '</body></html>';
+
+        try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { }
+      }
+
+      /* ---------- inputs ---------- */
+
+      var inputs = document.querySelectorAll('[data-k]');
+
+      function onChange(e) {
+        state[e.target.getAttribute('data-k')] = e.target.value;
+        render();
+      }
+
+      for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener('input', onChange);
+        inputs[i].addEventListener('change', onChange);
+      }
+
+      /* ---------- preview tabs ---------- */
+
+      var tabs = document.querySelectorAll('.segment button');
+      for (var t = 0; t < tabs.length; t++) {
+        tabs[t].addEventListener('click', function (e) {
+          var btn = e.currentTarget;
+          var view = btn.getAttribute('data-view');
+          for (var j = 0; j < tabs.length; j++) {
+            tabs[j].setAttribute('aria-selected', tabs[j] === btn ? 'true' : 'false');
+          }
+          frame.style.display = view === 'visual' ? 'block' : 'none';
+          codeEl.style.display = view === 'code' ? 'block' : 'none';
+        });
+      }
+
+      /* ---------- dialog ---------- */
+
+      var dlg = document.getElementById('dlg');
+      document.getElementById('howto').addEventListener('click', function () {
+        if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+      });
+      document.getElementById('dlgClose').addEventListener('click', function () {
+        if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
+      });
+      dlg.addEventListener('click', function (e) {
+        if (e.target === dlg) dlg.close();   // click the backdrop to dismiss
+      });
+
+      /* ---------- clipboard ---------- */
+
+      function flash(btn, label) {
+        var span = btn.querySelector('span') || btn;
+        var old = span.textContent;
+        span.textContent = label;
+        btn.classList.add('ok');
+        setTimeout(function () {
+          span.textContent = old;
+          btn.classList.remove('ok');
+        }, 1600);
+      }
+
+      // Selecting a rendered node and letting the browser copy it is what keeps
+      // images and formatting intact when pasting into Gmail's editor.
+      function copyRendered(markup) {
+        var holder = document.getElementById('holder');
+        holder.innerHTML = markup;
+        var range = document.createRange();
+        range.selectNodeContents(holder);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        sel.removeAllRanges();
+        holder.innerHTML = '';
+        return ok;
+      }
+
+      function copyViaApi(markup, fallbackText) {
+        if (!navigator.clipboard || !window.ClipboardItem) return Promise.reject();
+        return navigator.clipboard.write([new ClipboardItem({
+          'text/html': new Blob([markup], { type: 'text/html' }),
+          'text/plain': new Blob([fallbackText], { type: 'text/plain' })
+        })]);
+      }
+
+      document.getElementById('copyRich').addEventListener('click', function (e) {
+        var btn = e.currentTarget;
+        if (copyRendered(html)) return flash(btn, 'Copied');
+        copyViaApi(html, plain())
+          .then(function () { flash(btn, 'Copied'); })
+          .catch(function () { flash(btn, 'Copy failed — use HTML'); });
+      });
+
+      document.getElementById('copyCode').addEventListener('click', function (e) {
+        var btn = e.currentTarget;
+        function done() { flash(btn, 'HTML copied'); }
+        function legacy() {
+          var ta = document.createElement('textarea');
+          ta.value = html;
+          ta.style.position = 'fixed';
+          ta.style.left = '-99999px';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); done(); } catch (err) { flash(btn, 'Copy failed'); }
+          document.body.removeChild(ta);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(html).then(done, legacy);
+        } else { legacy(); }
+      });
+
+      document.getElementById('download').addEventListener('click', function () {
+        var doc = '<!doctype html><html><head><meta charset="utf-8"><title>Signature</title></head><body>' +
+          html + '</body></html>';
+        var url = URL.createObjectURL(new Blob([doc], { type: 'text/html' }));
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'signature.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      });
+
+      /* ---------- boot ---------- */
+
+      try {
+        var saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+        if (saved) {
+          for (var k in state) {
+            if (Object.prototype.hasOwnProperty.call(saved, k) && saved[k] !== undefined) state[k] = saved[k];
+          }
+        }
+      } catch (e) { }
+
+      for (var n = 0; n < inputs.length; n++) {
+        inputs[n].value = state[inputs[n].getAttribute('data-k')] || '';
+      }
+      render();
+    })();
+  </script>
+</body>
+
+</html>
