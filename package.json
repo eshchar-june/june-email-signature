@@ -1,0 +1,9 @@
+{
+  "name": "june-email-signature",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Single-page builder for the June email signature",
+  "scripts": {
+    "dev": "node server.js"
+  }
+}

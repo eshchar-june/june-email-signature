@@ -2,7 +2,11 @@
 
 A single-page tool for generating the June email signature and pasting it straight into Gmail.
 
-No build step, no dependencies — open `index.html` in a browser.
+No build step, no dependencies — open `index.html` in a browser, or serve it locally:
+
+```bash
+npm run dev
+```
 
 ## Usage
 
@@ -44,21 +48,30 @@ Verified against Gmail, and built to the same conventions Outlook and Apple Mail
 | --- | --- |
 | `index.html` | The whole app — UI, signature generator, clipboard handling |
 | `assets.js` | Generated base64 data URIs for the logo and contact icons |
-| `images/` | Source PNGs the data URIs are generated from |
+| `images/` | Source images the data URIs are generated from |
+| `server.js` | Zero-dependency static server behind `npm run dev` |
 
-To regenerate `assets.js` after changing any image:
+The logo is an animated GIF (`images/image-1.gif`); the three contact icons are PNGs. To regenerate
+`assets.js` after changing any of them:
 
 ```bash
 {
-  echo "// Auto-generated from images/*.png — base64 data URIs so the signature needs no image hosting."
+  echo "// Auto-generated from images/* — base64 data URIs so the signature needs no image hosting."
   echo "window.SIG_ASSETS = {"
-  printf '  avatar: "data:image/png;base64,%s",\n' "$(base64 -i images/image-1.png | tr -d '\n')"
+  printf '  avatar: "data:image/gif;base64,%s",\n' "$(base64 -i images/image-1.gif | tr -d '\n')"
   printf '  mail: "data:image/png;base64,%s",\n'   "$(base64 -i images/image-2.png | tr -d '\n')"
   printf '  phone: "data:image/png;base64,%s",\n'  "$(base64 -i images/image-3.png | tr -d '\n')"
   printf '  globe: "data:image/png;base64,%s"\n'   "$(base64 -i images/image-4.png | tr -d '\n')"
   echo "};"
 } > assets.js
 ```
+
+### A caveat on the animated logo
+
+Outlook on Windows renders only the **first frame** of an animated GIF, and Apple Mail does the same
+when it isn't the frontmost window. The current logo animates the wordmark in from an empty disc, so
+those clients show a plain pink circle with no "JUNE" on it. If that matters, re-export the GIF with
+the finished wordmark on frame 1 and let the animation run from there.
 
 ## Design
 
