@@ -19,11 +19,34 @@ Your details persist in `localStorage`, so the form comes back filled in next ti
 ## Email client compatibility
 
 The generated markup is table-based with 100% inline styles — no `<style>` block, no classes, and no
-media queries, since Gmail strips all of those from a signature. The June logo and the three contact
-icons are embedded as base64 data URIs, so there is nothing to host; Gmail re-uploads pasted images
-to its own servers. Copying prepends a `<br>` so the signature isn't flush against the message body.
+media queries, since Gmail strips all of those from a signature. Copying prepends a `<br>` so the
+signature isn't flush against the message body.
 
 Verified against Gmail, and built to the same conventions Outlook and Apple Mail need.
+
+### Images must be hosted, and this is not optional
+
+The logo and icons are referenced by public https URL, served by GitHub Pages out of `images/`:
+
+```
+https://eshchar-june.github.io/june-email-signature/images/
+```
+
+Two earlier approaches both failed, for reasons worth recording:
+
+- **Base64 `data:` URIs.** Convenient — nothing to host — but Gmail strips `data:` URIs from
+  received mail and Outlook blocks them outright. Recipients saw `alt` text and empty boxes.
+- **Letting Gmail host them.** Pasting into Gmail's signature editor really does re-upload the
+  images and rewrite the `src` to `googleusercontent.com`, and this looks like it works. It only
+  survives *new* messages. On a reply Gmail sends the proxy URL as a bare link, and that URL is
+  scoped to the sender's account, so every recipient gets a broken image.
+
+Hosting the images ourselves is what makes new mail, replies, forwards and non-Gmail clients behave
+identically. It also cuts the signature from ~101,000 characters to ~4,000, which matters if you
+ever need it to fit in a spreadsheet cell.
+
+To move the images to june.ai or any CDN, upload the `images/` folder and change the single `BASE`
+constant at the top of `assets.js`.
 
 ## Behaviour worth knowing
 
@@ -37,8 +60,8 @@ Verified against Gmail, and built to the same conventions Outlook and Apple Mail
   with `text/html` + `text/plain` is the fallback. This is the only path that prepends the leading
   `<br>`, so the preview and both HTML exports stay identical to the signature itself.
 - **Copy HTML** / **Download .html** export the raw markup for other clients.
-- The logo and contact icons are fixed. There is no upload — swap the PNGs in `images/` and
-  regenerate `assets.js`.
+- The logo and contact icons are fixed. There is no upload — replace the files in `images/` and
+  push; GitHub Pages serves them at the same URLs.
 - Field labels float Bootstrap-style, driven entirely by `:placeholder-shown`. That is why every
   input carries `placeholder=" "`; removing it strands the labels in their floated position.
 
@@ -47,24 +70,13 @@ Verified against Gmail, and built to the same conventions Outlook and Apple Mail
 | Path | Purpose |
 | --- | --- |
 | `index.html` | The whole app — UI, signature generator, clipboard handling |
-| `assets.js` | Generated base64 data URIs for the logo and contact icons |
-| `images/` | Source images the data URIs are generated from |
+| `assets.js` | Public image URLs, and the single `BASE` constant that points at them |
+| `images/` | The logo and icons, served publicly by GitHub Pages |
 | `server.js` | Zero-dependency static server behind `npm run dev` |
 
-The logo is an animated GIF (`images/image-1.gif`); the three contact icons are PNGs. To regenerate
-`assets.js` after changing any of them:
-
-```bash
-{
-  echo "// Auto-generated from images/* — base64 data URIs so the signature needs no image hosting."
-  echo "window.SIG_ASSETS = {"
-  printf '  avatar: "data:image/gif;base64,%s",\n' "$(base64 -i images/image-1.gif | tr -d '\n')"
-  printf '  mail: "data:image/png;base64,%s",\n'   "$(base64 -i images/image-2.png | tr -d '\n')"
-  printf '  phone: "data:image/png;base64,%s",\n'  "$(base64 -i images/image-3.png | tr -d '\n')"
-  printf '  globe: "data:image/png;base64,%s"\n'   "$(base64 -i images/image-4.png | tr -d '\n')"
-  echo "};"
-} > assets.js
-```
+The logo is an animated GIF (`images/image-1.gif`); the three contact icons are PNGs. Replacing any
+of them is just a commit — the URLs don't change, so already-installed signatures pick up the new
+image. Keep the filenames as they are.
 
 ### A caveat on the animated logo
 
