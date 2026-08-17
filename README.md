@@ -54,6 +54,9 @@ constant at the top of `assets.js`.
   all three are gone so is the divider, and an empty name and title take the whole heading block with
   them rather than leaving a blank line above a bare rule.
 - Bare domains are normalised (`june.ai/demo` → `https://june.ai/demo`).
+- Contact items carry both `white-space:nowrap` and the legacy `nowrap` attribute. Clients that drop
+  the style otherwise break a label like "Book a demo" onto three lines in a narrow column.
+- The logo and the text column are both top-aligned.
 - Email becomes a `mailto:` link, phone a `tel:` link.
 - **Copy signature** copies rich HTML by selecting a rendered off-screen node and letting the browser
   serialise it — the path that keeps images intact in Gmail's editor. `navigator.clipboard.write()`
@@ -78,6 +81,20 @@ The logo is an animated GIF (`images/image-1.gif`); the three contact icons are 
 of them is just a commit — the URLs don't change, so already-installed signatures pick up the new
 image. Keep the filenames as they are.
 
+### Dark mode
+
+Dark-mode clients invert text but never images. The contact icons were originally solid `#1c1842`
+with their shape carried by the alpha channel, so on a dark background they disappeared completely
+while the text around them stayed readable.
+
+There is no `prefers-color-scheme` escape hatch here — Gmail strips `<style>` blocks from
+signatures, so the icons cannot be swapped per theme. One colour has to work on both, and the icons
+are now `#d94f6a`: **3.98:1 on white, 4.37:1 on `#1a1a1a`**, both clearing the 3:1 minimum for
+graphical objects, while staying in the logo's colour family.
+
+Keep that constraint in mind if the icons are ever redrawn. The June pink `#f87c93` is tempting and
+looks right on dark, but it only reaches 2.53:1 on white.
+
 ### The animated logo's first frame
 
 Outlook on Windows renders only the **first frame** of an animated GIF, and Apple Mail does the same
@@ -97,4 +114,5 @@ reports fewer frames (49 became 40 here) while the timeline is unchanged at 2000
 
 90×90 circular avatar, 24px gap, name at 18/26 weight 600, title at 14/20 to match the contact
 metadata below it, a 1px `#e0e0e0` divider 12px under the heading, 16px above the contact row, 14px
-icons with 6px gaps and 16px between items, all in `#1c1842` Inter.
+icons with 6px gaps and 16px between items. Text is `#1c1842` Inter; the icons are `#d94f6a` so they
+survive dark mode.
