@@ -671,7 +671,9 @@
           '<img src="' + esc(A[icon] || '') + '" width="14" height="14" alt="" style="width:14px;height:14px;display:block;border:0;outline:none;text-decoration:none;">' +
           '</td>' +
           spacer(6) +
-          '<td style="padding:0;vertical-align:middle;white-space:nowrap;">' +
+          // the nowrap attribute backs up the CSS — clients that drop the style
+          // otherwise break "Book a demo" onto three lines in a narrow column
+          '<td nowrap="nowrap" style="padding:0;vertical-align:middle;white-space:nowrap;">' +
           text(14, 20, 400, link(href, esc(label))) +
           '</td>' +
           '</tr></table>' +
@@ -710,7 +712,7 @@
           : '';
 
         var photo = AVATAR
-          ? '<td width="90" style="width:90px;padding:0;vertical-align:middle;">' +
+          ? '<td width="90" style="width:90px;padding:0;vertical-align:top;">' +
           '<img src="' + esc(AVATAR) + '" width="90" height="90" alt="' + esc(state.name) + '" ' +
           'style="width:90px;height:90px;display:block;border:0;outline:none;border-radius:45px;">' +
           '</td>' + spacer(24)
@@ -720,7 +722,7 @@
           '<table role="presentation" cellpadding="0" cellspacing="0" border="0" ' +
           'style="border-collapse:collapse;background-color:#ffffff;font-family:' + FONT + ';color:' + INK + ';"><tr>' +
           photo +
-          '<td style="padding:0;vertical-align:middle;">' +
+          '<td style="padding:0;vertical-align:top;">' +
           '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">' +
           nameBlock + contactRow +
           '</table>' +
