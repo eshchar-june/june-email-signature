@@ -78,12 +78,20 @@ The logo is an animated GIF (`images/image-1.gif`); the three contact icons are 
 of them is just a commit — the URLs don't change, so already-installed signatures pick up the new
 image. Keep the filenames as they are.
 
-### A caveat on the animated logo
+### The animated logo's first frame
 
 Outlook on Windows renders only the **first frame** of an animated GIF, and Apple Mail does the same
-when it isn't the frontmost window. The current logo animates the wordmark in from an empty disc, so
-those clients show a plain pink circle with no "JUNE" on it. If that matters, re-export the GIF with
-the finished wordmark on frame 1 and let the animation run from there.
+when it isn't the frontmost window. The logo animates its wordmark in from an empty disc, so frame 1
+was originally a featureless pink circle in exactly those clients.
+
+The GIF now carries a duplicate of its final frame at the front. Since the animation already ends
+holding "JUNE", that reads as 40ms more of the existing hold rather than a seam, and non-animating
+clients get the complete logo.
+
+**If you re-export the GIF, this has to be redone** — put the finished wordmark on frame 1. To
+verify, compare against the previous file on the time axis, not frame by frame: GIF encoders merge
+consecutive identical frames and accumulate their durations, so a correct re-encode legitimately
+reports fewer frames (49 became 40 here) while the timeline is unchanged at 2000ms.
 
 ## Design
 
